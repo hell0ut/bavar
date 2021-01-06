@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'contacts',
     'shipping',
     'about',
-    'core'
+    'core',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -110,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTH_USER_MODEL = 'account.Account'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
