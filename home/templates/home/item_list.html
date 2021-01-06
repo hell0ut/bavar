@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    <h1>Чел держи список предметов</h1>
+{% for item in items %}
+{{ item }}
+{% endfor %}
+
+{% endblock %}
