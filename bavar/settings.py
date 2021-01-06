@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'shipping',
     'about',
     'core',
-    'account'
 ]
 
 MIDDLEWARE = [
@@ -111,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'account.Account'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -143,7 +141,7 @@ DJRICHTEXTFIELD_CONFIG = {
     'js': ['//cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js'],
     'init_template': 'djrichtextfield/init/tinymce.js',
     'settings': {
-        'menubar': False,
+        'menubar': True,
         'plugins': 'link image',
         'toolbar': 'bold italic | link image | removeformat',
         'width': 700
