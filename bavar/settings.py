@@ -151,3 +151,13 @@ DJRICHTEXTFIELD_CONFIG = {
 
 
 SITE_ID = 1
+
+
+
+
+
+
+
+
+
+

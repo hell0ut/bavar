@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block page_content %}
+<ul>
+<li><h1>{{ object }}</h1></li>
+    {% if logged %}
+        <li>{{ object.price }}</li>
+    {% endif %}
+<li>{{ object.description|safe }}</li>
+{% for image in item.images.all %}
+<li><img src="{{ image.image.url }}"></li>
+{% endfor %}
+
+
+</ul>
+
+
+{% endblock %}
