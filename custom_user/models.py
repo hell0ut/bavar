@@ -14,6 +14,7 @@ class AccountManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             cellphone=cellphone,
+            username=first_name+'_'+last_name
         )
         user.set_password(password)
         user.save()
@@ -39,14 +40,14 @@ class AccountManager(BaseUserManager):
         return user
 
 
-class Account(AbstractUser):
-    username = None
-    email = models.EmailField(unique=True)     # do we really need it??
-    cellphone = models.CharField(max_length=13, unique=True)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    date_joined = models.DateField(auto_now=True)
-    is_active = models.BooleanField(default=False)
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=121, verbose_name='Никнейм (создается автоматически)')
+    email = models.EmailField(unique=True, verbose_name='Email')     # do we really need it??
+    cellphone = models.CharField(max_length=13, unique=True, verbose_name='Номер телефона')
+    first_name = models.CharField(max_length=60, verbose_name='Имя')
+    last_name = models.CharField(max_length=60, verbose_name='Фамилия')
+    date_joined = models.DateField(auto_now=True, verbose_name='Дата регистрации')
+    is_active = models.BooleanField(default=False, verbose_name='Статус акаунта (подтвержден/неподтвержден администатором)')
 
     USERNAME_FIELD = 'cellphone'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
