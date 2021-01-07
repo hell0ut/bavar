@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 
-{% block page_content %} <h1>Я ГЕЙ</h1>
+{% block page_content %}
+    {% for category in object_list %}
+        <div>
+    <h1>{{ category }}</h1>
+        <ul>
+        {% for sub in category.subcategories %}
+         <li>{{ sub.title }}</li>
+        {% endfor %}
+        </ul>
+        </div>
+    {% endfor %}
 {% endblock %}
 
