@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block page_content %}
+    {% for item in category.items %}
+        <div>
+            <ul>
+                <li><a href="{% url 'home:item_detail' object.id item.id %}">{{ item }}</a></li>
+                {% if logged %}
+                <li>{{ item.price }}</li>
+                {% endif %}
+
+                <li>{{ item.description|safe }}</li>
+            </ul>
+            <img src="{{  item.main_photo.image.url }}">
+
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

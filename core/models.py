@@ -6,8 +6,8 @@ from djrichtextfield.models import RichTextField
 class Category(models.Model):
     title = models.CharField(max_length=100,verbose_name='Категория')
 
-    def subcategories(self):
-        return SubCategory.objects.filter(parentCategory=self)
+    def items(self):
+        return Item.objects.filter(category__parentCategory=self)
 
     def __str__(self):
         return self.title
@@ -15,7 +15,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     title = models.CharField(max_length=100,verbose_name='Подкатегория')
-    parentCategory = models.ForeignKey(Category,on_delete=models.CASCADE)
+    parentCategory = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='subs')
 
     def __str__(self):
         return self.parentCategory.title + ' | ' + self.title
@@ -26,17 +26,17 @@ class Item(models.Model):
     price = models.FloatField(verbose_name='Цена',default=0)
     quanity = models.IntegerField(verbose_name='Количество',default=1000)
     description = RichTextField(verbose_name='Описание',null=True)
-    category = models.ForeignKey(SubCategory,on_delete=models.CASCADE,default=None,null=True)
+    category = models.ForeignKey(SubCategory,on_delete=models.CASCADE,default=None,null=True,related_name='items')
 
-    def images(self):
-        return Image.objects.filter(item=self)
+    def main_photo(self):
+        return self.images.first()
 
     def __str__(self):
         return self.title
 
 
 class Image(models.Model):
-    name = models.CharField(max_length=255,null=True)
+    name = models.CharField(max_length=255,null=True,default='def')
     image = models.ImageField(upload_to='images/')
     default = models.BooleanField(default=False)
     width = models.FloatField(default=100)
@@ -63,10 +63,10 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField()
 
-    def get_cart_items(self):
+    def items(self):
         return self.items.all()
 
-    def get_cart_total(self):
+    def total(self):
         return sum([item.price*item.order_quanity for item in self.get_cart_items()])
 
     def __str__(self):
