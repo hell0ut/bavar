@@ -36,11 +36,11 @@ class Item(models.Model):
 
 
 class Image(models.Model):
-    name = models.CharField(max_length=255,null=True,default='def')
+    #name = models.CharField(max_length=255,null=True,default='def')
     image = models.ImageField(upload_to='images/')
-    default = models.BooleanField(default=False)
-    width = models.FloatField(default=100)
-    length = models.FloatField(default=100)
+    #default = models.BooleanField(default=False)
+    #width = models.FloatField(default=100)
+    #length = models.FloatField(default=100)
     item = models.ForeignKey(Item, related_name='images', on_delete=models.CASCADE,null=True)
 
 
