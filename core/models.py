@@ -4,7 +4,7 @@ from djrichtextfield.models import RichTextField
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=100,verbose_name='Категория')
+    title = models.CharField(max_length=100, verbose_name='Категория')
 
     def items(self):
         return Item.objects.filter(category__parentCategory=self)
@@ -14,8 +14,8 @@ class Category(models.Model):
 
 
 class SubCategory(models.Model):
-    title = models.CharField(max_length=100,verbose_name='Подкатегория')
-    parentCategory = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='subs')
+    title = models.CharField(max_length=100, verbose_name='Подкатегория')
+    parentCategory = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subs')
 
     def __str__(self):
         return self.parentCategory.title + ' | ' + self.title
@@ -36,12 +36,11 @@ class Item(models.Model):
 
 
 class Image(models.Model):
-    #name = models.CharField(max_length=255,null=True,default='def')
     image = models.ImageField(upload_to='images/')
-    #default = models.BooleanField(default=False)
-    #width = models.FloatField(default=100)
-    #length = models.FloatField(default=100)
     item = models.ForeignKey(Item, related_name='images', on_delete=models.CASCADE,null=True)
+
+    def __str__(self):
+        return f'Картинка для товара {self.item}'
 
 
 class OrderItem(models.Model):
@@ -70,5 +69,5 @@ class Order(models.Model):
         return sum([item.price*item.order_quanity for item in self.get_cart_items()])
 
     def __str__(self):
-        return f'{self.user}'
+        return f'Заказ пользователя {self.user}'
 
