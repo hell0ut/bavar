@@ -47,7 +47,8 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=60, verbose_name='Имя')
     last_name = models.CharField(max_length=60, verbose_name='Фамилия')
     date_joined = models.DateField(auto_now=True, verbose_name='Дата регистрации')
-    is_active = models.BooleanField(default=False, verbose_name='Статус акаунта (подтвержден/неподтвержден администатором)')
+    is_active = models.BooleanField(default=False, verbose_name='Подтвержден администатором')
+    is_confirmed = models.BooleanField(default=False, verbose_name='Почта подтверждена')
 
     USERNAME_FIELD = 'cellphone'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
