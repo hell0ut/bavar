@@ -6,33 +6,17 @@ admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Category)
 admin.site.register(SubCategory)
-admin.site.register(Image)
 
 
-class ItemAdminForm(forms.ModelForm):
-    image = forms.ImageField()
-
-    class Meta:
-        model = Item
-        fields = '__all__'
-
-    def save(self, commit=True):
-        item = super(ItemAdminForm, self).save(commit=False)
-
-        print(type(self.cleaned_data['image']))
-        i = Image(image=self.cleaned_data['image'], item=item)
-        i.save()
-        if commit:
-            item.save()
-
-        return item
+class ImageInline(admin.TabularInline):
+    model = Image
 
 
 class ItemAdmin(admin.ModelAdmin):
+    inlines = [ImageInline]
 
-    form = ItemAdminForm
 
-
+admin.site.register(Image)
 admin.site.register(Item, ItemAdmin)
 
 
