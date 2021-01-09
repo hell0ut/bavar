@@ -23,8 +23,8 @@ class SubCategory(models.Model):
 
 class Item(models.Model):
     title = models.CharField(max_length=100,verbose_name='Товар')
-    price = models.FloatField(verbose_name='Цена',default=0)
-    quanity = models.IntegerField(verbose_name='Количество',default=1000)
+    price = models.FloatField(verbose_name='Цена', default=0)
+    quantity = models.IntegerField(verbose_name='Количество товара на складе', default=0)
     description = RichTextField(verbose_name='Описание',null=True)
     category = models.ForeignKey(SubCategory,on_delete=models.CASCADE,default=None,null=True,related_name='items')
 
@@ -43,30 +43,51 @@ class Image(models.Model):
         return f'Картинка для товара {self.item}'
 
 
-class OrderItem(models.Model):
+class CartItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    date_added = models.DateTimeField(auto_now=True)
-    date_ordered = models.DateTimeField(null=True)
-    ordered = models.BooleanField(default=False)
-    order_quanity = models.IntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return self.item.title
+        return f'{self.item.title} в количестве: {self.quantity}'
+
+
+class Cart(models.Model):
+    ordered = models.BooleanField(default=False)
+
+    items = models.ManyToManyField(CartItem)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    items = models.ManyToManyField(OrderItem)
-    start_date = models.DateTimeField(auto_now_add=True)
-    ordered = models.BooleanField(default=False)
-    ordered_date = models.DateTimeField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Клиент')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+
+    shipping_address = models.TextField(verbose_name='Адрес получателя')
+    ordered_date = models.DateTimeField(auto_now=True)
+
+    UNCONFIRMED = 1
+    CONFIRMED = 2
+    ASSEMBLED = 3
+    SHIPPED = 4
+    ACCEPTED_BY_USER = 5
+    CANCELED = 6
+
+    ORDER_STATUS_CHOICES = [
+        (UNCONFIRMED, 'Ожидает подтверждения'),
+        (CONFIRMED, 'Подтвержденный администратором'),
+        (ASSEMBLED, 'Комплектуется'),
+        (SHIPPED, 'Передан в службу доставки'),
+        (ACCEPTED_BY_USER, 'Получен заказчиком'),
+        (CANCELED, 'Отменен')
+    ]
+
+    status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=UNCONFIRMED)
 
     def items(self):
-        return self.items.all()
+        return self.cart.items.all()
 
     def total(self):
-        return sum([item.price*item.order_quanity for item in self.get_cart_items()])
+        return sum([cart_item.item.price * cart_item.quanity for cart_item in self.items()])
 
     def __str__(self):
         return f'Заказ пользователя {self.user}'
