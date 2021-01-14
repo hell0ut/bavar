@@ -56,7 +56,7 @@ class CustomUser(AbstractUser):
     objects = AccountManager()
 
     def __str__(self):
-        return f'Клиент {self.first_name} {self.last_name}. Телефон - {self.cellphone}'
+        return f'{self.first_name} {self.last_name}. Телефон - {self.cellphone}'
 
 
 
