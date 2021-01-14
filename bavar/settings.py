@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'shipping',
     'about',
     'core',
-    'custom_user'
+    'custom_user',
+    'django_rename_app'
 ]
 
 MIDDLEWARE = [
