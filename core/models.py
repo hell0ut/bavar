@@ -64,10 +64,10 @@ class CartItem(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Клиент')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Заказчик')
 
     shipping_address = models.TextField(verbose_name='Адрес получателя')
-    ordered_date = models.DateTimeField(auto_now=True)
+    ordered_date = models.DateTimeField(auto_now=True, verbose_name='Время заказа')
     # спосіб оплати можна додати після уточнення, які саме способи доступні в магазині
 
     UNCONFIRMED = 1
@@ -86,22 +86,31 @@ class Order(models.Model):
         (CANCELED, 'Отменен')
     ]
 
-    status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=UNCONFIRMED)
+    status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=UNCONFIRMED, verbose_name='Статус')
 
     def get_items(self):
         return self.items.all()
 
-    def total(self):
+    def total(self):  # consider returning integer
         return sum([order_item.item.price * order_item.quantity for order_item in self.get_items()])
 
     def __str__(self):
-        return f'Заказ пользователя {self.user}'
+        return f'Заказ пользователя {self.user.first_name} {self.user.last_name}'
+
+    def order(self):
+        return self.__str__()
 
 
 class OrderItem(models.Model):
-    item = models.ForeignKey(CartItem, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     quantity = models.PositiveIntegerField(verbose_name='Количество', default=1)
 
+    def __str__(self):
+        return f'Товар {self.item.title} в количестве {self.quantity}'
 
+    def price_for_1_item(self):  # consider returning integer
+        return self.item.price
 
+    def subtotal(self):  # consider returning integer
+        return self.item.price * self.quantity
